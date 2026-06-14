@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/**
+ * @id: This marks the field as the Primary Key (the unique identifier for this row).
+ * @default(cuid()): Instead of counting up 1, 2, 3, it automatically generates a highly secure, collision-resistant string ID (like clz123abc0000xyz) the exact second a new user is created.
+ * @default(now()) & @updatedAt: These are absolute lifesavers. Prisma will automatically stamp the exact date/time a user is created, and it will automatically update the updatedAt clock every single time you change any data in that row.
+ * ? (The Optional Flag): Notice how imageUrl String? has a question mark, but emailAddress String does not. The ? means this data is optional (it can be null). The database will physically reject any attempt to create a user if you forget to include their email address.
+ */
+model User {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  imageUrl     String?
+  firstName    String?
+  lastName     String?
+  emailAddress String   @unique
+
+  userToProjects UserToProject[]
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name      String
+  githubUrl String
+  deletedAt DateTime?
+
+  userToProjects UserToProject[] // This does not actually exist in your PostgreSQL database. This is a special Prisma helper. It tells Prisma: "When I am writing my JavaScript code, give me an array so I can easily see all the bridge connections attached to this user/project."
+  commits        Commit[]
+}
+
+model UserToProject {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  projectId String
+  user      User    @relation(fields: [userId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, projectId])
+}
+
+/**
+ * user User: Create a smart connection and call it user, pointing at the User model.
+ * @relation(...): Here is how you build the connection.
+ * fields: [userId]: Take the dumb string column in this bridge table called userId...
+ * references: [id]: ...and make sure it perfectly matches the id column in the User table.
+ * A single @unique (like on your email address) means that specific column must be completely unique across the whole table.
+ * A double @@unique with an array inside it is a Compound Constraint.
+ * It tells the database: "It is okay if the userId shows up multiple times (a user can have many projects). It is okay if the projectId shows up multiple times (a project can have many users). But the exact combination of this specific User and this specific Project can only exist in this table ONE time."
+ */
+
+model Commit {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  commitMessage      String
+  commitHash         String
+  commitAuthorName   String
+  commitAuthorAvatar String
+  commitDate         DateTime
+
+  summary String //AI summary
+}
