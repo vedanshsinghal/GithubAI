@@ -2,13 +2,15 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../generated/prisma"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
 }
 
 /**
@@ -27,6 +29,7 @@ model User {
   emailAddress String   @unique
 
   userToProjects UserToProject[]
+  questionsAsked Question[]
 }
 
 model Project {
@@ -38,8 +41,11 @@ model Project {
   githubUrl String
   deletedAt DateTime?
 
-  userToProjects UserToProject[] // This does not actually exist in your PostgreSQL database. This is a special Prisma helper. It tells Prisma: "When I am writing my JavaScript code, give me an array so I can easily see all the bridge connections attached to this user/project."
-  commits        Commit[]
+  userToProjects       UserToProject[] // This does not actually exist in your PostgreSQL database. This is a special Prisma helper. It tells Prisma: "When I am writing my JavaScript code, give me an array so I can easily see all the bridge connections attached to this user/project."
+  commits              Commit[]
+  sourceCodeEmbeddings SourceCodeEmbedding[]
+
+  savedQuestions Question[]
 }
 
 model UserToProject {
@@ -80,4 +86,33 @@ model Commit {
   commitDate         DateTime
 
   summary String //AI summary
+}
+
+model SourceCodeEmbedding {
+  id String @id @default(cuid())
+
+  summaryEmbedding Unsupported("vector(768)")?
+  sourceCode       String
+  fileName         String
+  summary          String
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  question String
+  answer   String
+
+  filesReferences Json?
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
