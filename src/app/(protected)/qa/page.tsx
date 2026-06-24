@@ -9,7 +9,7 @@ import CodeReferences from '../dashboard/code-references'
 
 const QAPage = () => {
     const { projectId } = useProject()
-    const { data: questions } = api.project.getQuestions.useQuery({ projectId })
+    const { data: questions } = api.project.getQuestions.useQuery({ projectId }) // data renamed to questions
     const [questionIndex, setQuestionIndex] = React.useState(0)
     const [open, setOpen] = React.useState(false)
     const question = questions?.[questionIndex]

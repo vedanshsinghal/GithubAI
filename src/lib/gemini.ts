@@ -42,7 +42,7 @@ ${diff}
 
 export async function summariseCode(doc: Document) {
   console.log("getting summary for", doc.metadata.source)
-  const code = doc.pageContent.slice(0, 10000)
+  const code = doc.pageContent.slice(0, 20000) // first 20k characters he consider honge
 
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
@@ -70,6 +70,7 @@ ${code}
         return "" // Give up after 3 tries
       }
       // Wait 1 minute before retrying so the rate limit fully resets
+      //To force JavaScript to actually stop and wait, we have to wrap setTimeout in a Promise
       await new Promise(resolve => setTimeout(resolve, 60000))
     }
   }
@@ -79,9 +80,11 @@ ${code}
 export async function generateEmbedding(summary: string) {
   const model = genAI.getGenerativeModel({ model: "gemini-embedding-2" })
   const result = await model.embedContent({
-    content: { parts: [{ text: summary }] },
+    content: { role: "user", parts: [{ text: summary }] },
+    // @ts-ignore - outputDimensionality is supported by the API but not in the SDK types
     outputDimensionality: 768
   })
   const embedding = result.embedding
   return embedding.values
 }
+

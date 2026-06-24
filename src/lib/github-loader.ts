@@ -47,10 +47,12 @@ const generateEmbeddings = async (docs: Document[]) => {
         if (!summary) continue // skip if summary failed to prevent empty string embedding crash
 
         const embedding = await generateEmbedding(summary) //then get the embedding of summary
-        
+
         results.push({
             summary,
             embedding,
+
+            // Deep clones and sanitizes the string to remove hidden metadata/encodings before saving to DB
             sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
             fileName: doc.metadata.source
         })
