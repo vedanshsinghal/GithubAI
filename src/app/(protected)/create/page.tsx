@@ -49,7 +49,7 @@ const CreatePage = () => {
         },{
             onSuccess:()=> {
                 toast.success("Project created!")
-                refetch()
+                void refetch()
                 reset()
             },
             onError:()=> {

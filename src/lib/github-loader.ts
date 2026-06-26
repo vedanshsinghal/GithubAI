@@ -4,7 +4,7 @@ import { generateEmbedding, summariseCode } from "./gemini"
 import { db } from "~/server/db"
 export const loadGithubRepo = async (githubUrl: string, githubToken?: string) => {
     const loader = new GithubRepoLoader(githubUrl, {
-        accessToken: githubToken || "",
+        accessToken: githubToken ?? "",
         branch: "main",
         ignorePaths: [
             "src/components/ui",
@@ -47,7 +47,9 @@ export const indexGithubRepo = async (projectId: string, githubUrl: string, gith
             data: {
                 projectId,
                 summary: embedding.summary,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 sourceCode: embedding.sourceCode,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 fileName: embedding.fileName,
 
             }
@@ -74,8 +76,8 @@ const generateEmbeddings = async (docs: Document[]) => {
             embedding,
 
             // Deep clones and sanitizes the string to remove hidden metadata/encodings before saving to DB
-            sourceCode: JSON.parse(JSON.stringify(doc.pageContent)),
-            fileName: doc.metadata.source
+            sourceCode: JSON.parse(JSON.stringify(doc.pageContent)) as string,
+            fileName: doc.metadata.source as string
         })
 
         // Wait 4 seconds between requests to avoid hitting the 15 RPM rate limit

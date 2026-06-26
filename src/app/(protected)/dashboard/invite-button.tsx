@@ -28,7 +28,7 @@ const InviteButton = () => {
                 Ask them to copy and paste this link
             </p>
             <Input className='mt-4' readOnly onClick={()=>{
-                navigator.clipboard.writeText(`${origin}/join/${projectId}`)
+                void navigator.clipboard.writeText(`${origin}/join/${projectId}`)
                 toast.success("copied to clipboard")
             }} value={`${origin}/join/${projectId}`}></Input>
         </DialogContent>

@@ -54,7 +54,8 @@ const QAPage = () => {
                         <div className="flex-1 overflow-y-auto p-4">
                             <MDEditor.Markdown source={question.answer} />
                             <div className="h-4"></div>
-                            <CodeReferences filesReferences={question.filesReferences ?? [] as any}></CodeReferences>
+                            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */}
+                            <CodeReferences filesReferences={question.filesReferences ?? ([] as any)}></CodeReferences>
                         </div>
                     </DialogContent>
                 )}

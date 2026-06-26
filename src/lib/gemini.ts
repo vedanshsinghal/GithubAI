@@ -81,7 +81,7 @@ export async function generateEmbedding(summary: string) {
   const model = genAI.getGenerativeModel({ model: "gemini-embedding-2" })
   const result = await model.embedContent({
     content: { role: "user", parts: [{ text: summary }] },
-    // @ts-ignore - outputDimensionality is supported by the API but not in the SDK types
+    // @ts-expect-error - outputDimensionality is supported by the API but not in the SDK types
     outputDimensionality: 768
   })
   const embedding = result.embedding

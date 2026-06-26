@@ -32,19 +32,19 @@ export const getCommitHashes = async (githubUrl: string): Promise<Response[]> =>
     })
     // sort commits by time
     // sorting : sort((a,b) =>) , a - b = Ascending (Smallest/Oldest first), b-a is descending. Compare all pairs of dates.
-    const sortedCommits = data.sort((a: any, b: any) => new Date(b.commit.author.date).getTime() - new Date(a.commit.author.date).getTime()) as any[]
-    return sortedCommits.slice(0, 10).map((commit: any) => ({
-        commitHash: commit.sha as string,
+    const sortedCommits = data.sort((a, b) => new Date(b.commit.author?.date ?? "").getTime() - new Date(a.commit.author?.date ?? "").getTime())
+    return sortedCommits.slice(0, 10).map((commit) => ({
+        commitHash: commit.sha,
         commitMessage: commit.commit.message ?? "",
         commitAuthorName: commit.commit?.author?.name ?? "",
-        commitAuthorAvatar: commit?.author?.avatar_url ?? "",
+        commitAuthorAvatar: commit.author?.avatar_url ?? "",
         commitDate: commit.commit?.author?.date ?? ""
         // ?? if value on left is null or undefined
     }))
 }
 
 export const pollCommits = async (projectId: string) => {
-    const { project, githubUrl } = await fetchProjectGithubUrl(projectId) // get url of repo
+    const { githubUrl } = await fetchProjectGithubUrl(projectId) // get url of repo
     const commitHashes = await getCommitHashes(githubUrl)
     const unprocessedCommits = await filterUnprocessedCommits(projectId, commitHashes) // get commits who have not been processed yet, so you dont generate ai summaries again
     const summaryResponses = await Promise.allSettled(unprocessedCommits.map(commit => {
@@ -52,7 +52,7 @@ export const pollCommits = async (projectId: string) => {
     }))
     const summaries = summaryResponses.map((response) => {
         if (response.status === "fulfilled") {
-            return response.value as string
+            return response.value
         }
         return ""
     })
@@ -74,7 +74,7 @@ export const pollCommits = async (projectId: string) => {
 
 async function summariseCommit(githubUrl: string, commitHash: string) {
     // get the diff then pass into AI
-    const { data } = await axios.get(`${githubUrl}/commit/${commitHash}.diff`, {
+    const { data } = await axios.get<string>(`${githubUrl}/commit/${commitHash}.diff`, {
         headers: {
             Accept: "application/vnd.github.v3.diff"
         }

@@ -56,6 +56,7 @@ export const projectRouter = createTRPCRouter({
         return await ctx.db.question.create({
             data: {
                 answer: input.answer,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 filesReferences: input.filesReferences,
                 projectId: input.projectId,
                 question: input.question,
