@@ -51,6 +51,10 @@ ${question}
     })()
     return {
         output: stream.value,
-        filesReferences: result
+        filesReferences: result.map(doc => ({
+            fileName: doc.fileName,
+            sourceCode: doc.sourceCode,
+            summary: doc.summary,
+        }))
     }
 }
