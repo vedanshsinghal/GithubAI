@@ -13,17 +13,20 @@ export const loadGithubRepo = async (githubUrl: string, githubToken?: string) =>
             "dist"
         ],
         ignoreFiles: [
-            "package-lock.json",
-            "yarn.lock",
-            "pnpm-lock.yaml",
-            "bun.lockb",
-            ".env",
-            ".env.local",
-            ".env.development",
-            ".env.production",
-            "eslint.config.mjs",
-            "components.json",
-            "tailwind.config.ts"
+            // Lockfiles
+            "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb",
+            // Secrets
+            ".env", ".env.local", ".env.development", ".env.production",
+            // ESLint
+            "eslint.config.mjs", "eslint.config.js", "eslint.config.cjs", "eslint.config.ts",
+            ".eslintrc", ".eslintrc.json", ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.yaml", ".eslintrc.yml",
+            // Prettier
+            ".prettierrc", ".prettierrc.json", ".prettierrc.js", ".prettierrc.cjs", ".prettierrc.yaml", ".prettierrc.yml", "prettier.config.js", "prettier.config.cjs",
+            // Ignore files
+            ".gitignore", ".prettierignore", ".eslintignore",
+            // Generic UI / Framework configs
+            "components.json", "tailwind.config.ts", "tailwind.config.js", "postcss.config.js", "postcss.config.mjs",
+            "next.config.js", "next.config.mjs", "next-env.d.ts", "tsconfig.json", "tsconfig.node.json"
         ],
         recursive: true,
         unknown: "warn",
