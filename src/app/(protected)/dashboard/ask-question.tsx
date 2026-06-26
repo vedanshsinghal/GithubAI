@@ -9,8 +9,11 @@ import useProject from '~/hooks/use-project'
 import { askQuestion } from './actions'
 import { readStreamableValue } from "@ai-sdk/rsc"
 import dynamic from 'next/dynamic'
-const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
-const MDEditorMarkdown = dynamic(() => import('@uiw/react-md-editor').then(mod => mod.default.Markdown), { ssr: false })
+
+const MDEditorMarkdown = dynamic(
+    () => import('@uiw/react-md-editor').then(mod => mod.default.Markdown),
+    { ssr: false }
+)
 import CodeReferences from './code-references'
 import { api } from '~/trpc/react'
 import { toast } from 'sonner'
