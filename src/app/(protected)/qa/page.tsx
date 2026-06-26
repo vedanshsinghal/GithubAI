@@ -4,7 +4,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/u
 import useProject from '~/hooks/use-project'
 import { api } from '~/trpc/react'
 import AskQuestionCard from '../dashboard/ask-question'
-import MDEditor from '@uiw/react-md-editor'
+import dynamic from 'next/dynamic'
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
+const MDEditorMarkdown = dynamic(() => import('@uiw/react-md-editor').then(mod => mod.default.Markdown), { ssr: false })
 import CodeReferences from '../dashboard/code-references'
 
 const QAPage = () => {
@@ -52,7 +54,7 @@ const QAPage = () => {
                             </DialogTitle>
                         </DialogHeader>
                         <div className="flex-1 overflow-y-auto p-4">
-                            <MDEditor.Markdown source={question.answer} />
+                            <MDEditorMarkdown source={question.answer} />
                             <div className="h-4"></div>
                             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */}
                             <CodeReferences filesReferences={question.filesReferences ?? ([] as any)}></CodeReferences>

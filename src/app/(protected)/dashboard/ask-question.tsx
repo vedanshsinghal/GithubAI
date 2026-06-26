@@ -8,7 +8,9 @@ import { Textarea } from '~/components/ui/textarea'
 import useProject from '~/hooks/use-project'
 import { askQuestion } from './actions'
 import { readStreamableValue } from "@ai-sdk/rsc"
-import MDEditor from '@uiw/react-md-editor'
+import dynamic from 'next/dynamic'
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
+const MDEditorMarkdown = dynamic(() => import('@uiw/react-md-editor').then(mod => mod.default.Markdown), { ssr: false })
 import CodeReferences from './code-references'
 import { api } from '~/trpc/react'
 import { toast } from 'sonner'
@@ -67,7 +69,7 @@ const AskQuestionCard = () => {
                         </div>
                     </DialogHeader>
                     <div className="flex-1 overflow-y-auto">
-                        <MDEditor.Markdown source={answer} className='max-w-[70vw] !h-full max-h-[40vh] overflow-scroll' />
+                        <MDEditorMarkdown source={answer} className='max-w-[70vw] !h-full max-h-[40vh] overflow-scroll' />
                         <div className="h-4"></div>
                         <CodeReferences filesReferences={filesReferences} />
                     </div>
