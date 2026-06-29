@@ -37,7 +37,6 @@ export function AppSidebar() {
                             GitHubAI
                         </h1>)}
                 </div>
-
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
@@ -73,16 +72,17 @@ export function AppSidebar() {
                                     return (
                                         <SidebarMenuItem key={project.name}>
                                             <SidebarMenuButton asChild>
-                                                <div onClick={() => {
+                                                <div className="cursor-pointer group-data-[collapsible=icon]:!justify-center" onClick={() => {
                                                     setProjectId(project.id)
                                                 }}>
                                                     <div className={cn(
-                                                        "rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary",
+                                                        "rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary shrink-0",
+                                                        "group-data-[collapsible=icon]:size-5",
                                                         { "bg-primary text-white": project.id === projectId }
                                                     )}>
                                                         {project.name[0]}
                                                     </div>
-                                                    <span>{project.name}</span>
+                                                    <span className="group-data-[collapsible=icon]:hidden">{project.name}</span>
                                                 </div>
 
                                             </SidebarMenuButton>
