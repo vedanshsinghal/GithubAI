@@ -1,4 +1,4 @@
-import "~/styles/globals.css";
+import { Analytics } from "@vercel/analytics/next"
 
 import {ClerkProvider} from "@clerk/nextjs"
 import { type Metadata } from "next";
@@ -7,6 +7,7 @@ import { Geist, Inter } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 import { cn } from "~/lib/utils";
 import { Toaster } from "sonner";
+
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -25,6 +26,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
+    <>
+    <Analytics/>
     <ClerkProvider>
       <html lang="en" className={cn(geist.variable, "font-sans", inter.variable)}>
       <body>
@@ -33,5 +36,6 @@ export default function RootLayout({
       </body>
     </html>
     </ClerkProvider>
+    </>
   );
 }
