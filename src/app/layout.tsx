@@ -3,6 +3,7 @@ import "~/styles/globals.css";
 import {ClerkProvider} from "@clerk/nextjs"
 import { type Metadata } from "next";
 import { Geist, Inter } from "next/font/google";
+import { Analytics } from '@vercel/analytics/next';
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { cn } from "~/lib/utils";
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
         <Toaster richColors/>
+        <Analytics />
       </body>
     </html>
     </ClerkProvider>
